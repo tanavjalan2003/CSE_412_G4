@@ -1,5 +1,4 @@
 <?php
-
 function emailExists($conn, $email) {
     $sql = 'SELECT * FROM users WHERE email = $1;';
     $result = pg_query_params($conn, $sql, array($email));
