@@ -26,7 +26,7 @@ if (!isset($_SESSION["userid"])) {
             <button id="calendarViewBtn" class="view-btn">Calendar View</button>
             <button id="listViewBtn" class="view-btn">List View</button>
             <div class="filters">
-                <input type="text" id="searchBar" placeholder="Search tasks...">
+                <input type="text" id="searchBar" placeholder="Search task name...">
             </div>
         </aside>
 
