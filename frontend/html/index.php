@@ -258,10 +258,41 @@ if (!isset($_SESSION["userid"])) {
                             if (category.categoryid == data.categoryid)
                                 optionElement.selected = true;
                         });
-                        editTaskModal.style.display = "block";
-                    })
+                        editTaskModal.style.display = "flex";
+                    });
+                });
+            });
+
+            closeModal.addEventListener("click", () => {
+                editTaskModal.style.display = "none";
+            });
+
+            window.addEventListener("click", (e) => {
+                if (e.target === editTaskModal)
+                    editTaskModal.style.display = "none";
+            });
+
+            document.getElementById("editTaskForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                fetch("includes/updateTask.php", {
+                    method: "POST",
+                    body: formData,
                 })
-            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    alert("Task updated successfully!");
+                    document.getElementById("taskEditingModal").style.display = "none";
+                })
+            });
+
+
         }
     </script>
 </body>
