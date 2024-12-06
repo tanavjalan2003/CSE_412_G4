@@ -11,6 +11,7 @@ require_once 'includes/dbh.inc.php';
 
 // Fetch current user data
 $userID = $_SESSION["userID"];
+$email = $_SESSION["email"];
 $sql = "SELECT name, email FROM users WHERE \"userID\" = $1";
 $result = pg_query_params($conn, $sql, array($userID));
 
@@ -35,7 +36,7 @@ $user = pg_fetch_assoc($result);
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="profile-text">
-                <h1>Welcome, <a href="profile.php"><?php echo htmlspecialchars($_SESSION["username"]); ?></a></h1>
+                <h1>Welcome, <a href="index.php"><?php echo htmlspecialchars($_SESSION["username"]); ?></a></h1>
             </div>
             <button id="calendarViewBtn" class="view-btn">Calendar View</button>
             <button id="listViewBtn" class="view-btn">List View</button>
@@ -47,11 +48,11 @@ $user = pg_fetch_assoc($result);
             <form action="includes/updateProfile.inc.php" method="POST">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" placeholder="Enter new name">
+                    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($_SESSION['username']); ?>" placeholder="Enter new name">
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Enter new email">
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($_SESSION['email']); ?>" placeholder="Enter new email">
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>

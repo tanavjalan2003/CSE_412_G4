@@ -42,6 +42,7 @@ function loginUser($conn, $email, $password) {
         session_start();
         $_SESSION["userid"] = $emailExists["userID"];
         $_SESSION["username"] = $emailExists["name"];
+        $_SESSION["email"] = $emailExists["email"];
         header(header: "location: ../index.php");
         exit();
     }
