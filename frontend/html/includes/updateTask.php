@@ -30,3 +30,4 @@ if($result) {
 else {
     echo json_encode(["error" => "Failed to update task. (stmt)"]);
 }
+?>
