@@ -16,8 +16,6 @@ $data = json_decode(file_get_contents("php://input"), true);
 $statuses = isset($data['statuses']) ? $data['statuses'] : [];
 $categories = isset($data['categories']) ? $data['categories'] : [];
 
-$sql = "SELECT task.taskid, task.title, task.duedate, task.status, category.name AS categoryname FROM task WHERE userid = $1";
-
 $sql = 'SELECT task.taskid, task.title, task.duedate, task.status, category.name AS categoryname
 FROM task
 INNER JOIN category

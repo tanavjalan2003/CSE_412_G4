@@ -25,6 +25,8 @@ if (!isset($_SESSION["userid"])) {
             </div>
             <button id="calendarViewBtn" class="view-btn">Calendar View</button>
             <button id="listViewBtn" class="view-btn">List View</button>
+            <button id="addTaskBtn" class="view-btn">Add Task</button>
+            <button id="addCategoryBtn" class="view-btn">Add Category</button>
             <div class="filters">
                 <input type="text" id="searchBar" placeholder="Search task name...">
 
@@ -45,7 +47,7 @@ if (!isset($_SESSION["userid"])) {
                         <label><input type="checkbox" class="filter-status" value="Overdue">Overdue</label>
                     </div>
                 </div>
-                <button id="applyFilters">Apply Filters</button>
+                <button id="applyFilters" class="view-btn">Apply Filters</button>
             </div>
         </aside>
  
@@ -81,23 +83,23 @@ if (!isset($_SESSION["userid"])) {
     <!-- Edit Task Modal(popup)-->
     <div id="taskEditingModal" class="modal">
         <div class="modal-wrapepr">
-            <span id="closeModal">&times;</span>
+            <span id="edit-closeModal">&times;</span>
             <h2>Edit task</h2>
 
             <form id="editTaskForm">
-                <input type="hidden" id="taskid" name="taskid">
+                <input type="hidden" id="edit-taskid" name="taskid">
 
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="edit-title" name="title" required>
 
                 <label for="description">Description</label>
-                <input type="textarea" id="description" name="description" row="3" required>
+                <input type="textarea" id="edit-description" name="description" row="3" required>
 
                 <label for="duedate">Due Date</label>
-                <input type="date" id="duedate" name="duedate" required>
+                <input type="date" id="edit-duedate" name="duedate" required>
 
                 <label for="status">Status</label>
-                <select id="status" name="status">
+                <select id="edit-status" name="status">
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
                     <option value="Overdue">Overdue</option>
@@ -113,6 +115,36 @@ if (!isset($_SESSION["userid"])) {
     </div>
 
     <!-- TODO ADD TASK MODAL -->
+    <div id="addTaskModal" class="modal">
+        <div class="modal-wrapepr">
+            <span id="addTask-closeModal">&times;</span>
+            <h2>Add a new task</h2>
+
+            <form id="addTaskForm">
+                <label for="title">Title</label>
+                <input type="text" id="addTask-title" name="title" required>
+
+                <label for="description">Description</label>
+                <input type="textarea" id="addTask-description" name="description" row="3">
+
+                <label for="duedate">Due Date</label>
+                <input type="date" id="addTask-duedate" name="duedate" required>
+
+                <label for="status">Status</label>
+                <select id="addTask-status" name="status">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Overdue">Overdue</option>
+                </select>
+
+                <label for="category">Category</label>
+                <!-- This will be filled like the task table except we pull user categories -->
+                <select id="addTask-category" name="categoryid"></select>
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
     <!-- TODO ADD CATEGORY MODAL -->
 
     <!-- Switch between views -->
@@ -198,8 +230,6 @@ if (!isset($_SESSION["userid"])) {
                             /* Add functions to buttons since javascript doesn't want to play nice with DOM loading */
                             addDelete();
                             addEdit();
-
-
         }
 
         document.addEventListener("DOMContentLoaded", applyFilters);
@@ -252,10 +282,31 @@ if (!isset($_SESSION["userid"])) {
 
     <!-- Edit Task Button -->
     <script>
+        document.getElementById("editTaskForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            fetch("includes/updateTask.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById("taskEditingModal").style.display = "none";
+                alert("Task updated successfully!");
+                applyFilters();
+                })
+        });
+
         function addEdit() {
             const editButtons = document.querySelectorAll(".editBtn");
             const editTaskModal = document.getElementById("taskEditingModal");
-            const closeModal =  document.getElementById("closeModal");
+            const closeModal =  document.getElementById("edit-closeModal");
             const editTaskForm = document.getElementById("editTaskForm");
 
             editButtons.forEach(button => {
@@ -271,15 +322,13 @@ if (!isset($_SESSION["userid"])) {
                             alert(data.error);
                             return;
                         }
-
-                        console.log(data);
                         
                         // Fill selector fields
-                        document.getElementById("taskid").value = data.taskid;
-                        document.getElementById("title").value = data.title;
-                        document.getElementById("description").value = data.description;
-                        document.getElementById("duedate").value = data.duedate;
-                        document.getElementById("status").value = data.status;
+                        document.getElementById("edit-taskid").value = data.taskid;
+                        document.getElementById("edit-title").value = data.title;
+                        document.getElementById("edit-description").value = data.description;
+                        document.getElementById("edit-duedate").value = data.duedate;
+                        document.getElementById("edit-status").value = data.status;
 
                         // Dynamically fill the category dropdown
                         const categorySelector = document.getElementById("category");
@@ -308,27 +357,6 @@ if (!isset($_SESSION["userid"])) {
                 if (e.target === editTaskModal)
                     editTaskModal.style.display = "none";
             });
-
-            document.getElementById("editTaskForm").addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-                fetch("includes/updateTask.php", {
-                    method: "POST",
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-                    document.getElementById("taskEditingModal").style.display = "none";
-                    alert("Task updated successfully!");
-                })
-            });
-
-
         }
     </script>
 
@@ -350,6 +378,71 @@ if (!isset($_SESSION["userid"])) {
             })
         }
         document.addEventListener("DOMContentLoaded", fillCategoryFilter);
+    </script>
+
+    <!-- Add Task Modal -->
+    <script text="text/javascript">
+        function addTask() {
+            const addTaskModal = document.getElementById("addTaskModal");
+            const closeModal =  document.getElementById("addTask-closeModal");
+            const addTaskForm = document.getElementById("addTaskForm");
+            const addTaskButton = document.getElementById("addTaskBtn");
+
+            fetch("includes/getCategories.php")
+            .then(response => response.json())
+            .then(categories => {
+                const addTaskCategorySelector = document.getElementById("addTask-category");
+                addTaskCategorySelector.innerHTML = "";
+
+                categories.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.categoryid;
+                    option.textContent = category.name;
+                    addTaskCategorySelector.appendChild(option);
+                });
+            })
+
+
+            document.getElementById("addTaskForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                console.log(formData);
+
+                fetch("includes/addTask.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    document.getElementById("addTaskModal").style.display = "none";
+                    alert("Task added successfully!");
+                    applyFilters();
+                    })
+            });
+
+
+            addTaskButton.addEventListener("click", () => {
+                addTaskModal.style.display = "flex";
+            });
+
+            closeModal.addEventListener("click", () => {
+                addTaskModal.style.display = "none";
+            });
+
+            window.addEventListener("click", (e) => {
+                if (e.target === addTaskModal)
+                    addTaskModal.style.display = "none";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", addTask);
     </script>
 
 </body>
