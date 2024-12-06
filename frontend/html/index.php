@@ -27,6 +27,25 @@ if (!isset($_SESSION["userid"])) {
             <button id="listViewBtn" class="view-btn">List View</button>
             <div class="filters">
                 <input type="text" id="searchBar" placeholder="Search task name...">
+
+                <h3>Filter Tasks:</h3>
+                <div class="filter-group">
+                    <h4>Categories</h4>
+                    <div id="filterCategories">
+                        <!-- Grab user categories and fill this -->
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <h4>Status</h4>
+                    <div id="filterStatus">
+                        <label><input type="checkbox" class="filter-status" value="Pending">Pending</label>
+                        <br>
+                        <label><input type="checkbox" class="filter-status" value="Completed">Completed</label>
+                        <br>
+                        <label><input type="checkbox" class="filter-status" value="Overdue">Overdue</label>
+                    </div>
+                </div>
+                <button id="applyFilters">Apply Filters</button>
             </div>
         </aside>
  
@@ -93,6 +112,8 @@ if (!isset($_SESSION["userid"])) {
         </div>
     </div>
 
+    <!-- TODO ADD TASK MODAL -->
+    <!-- TODO ADD CATEGORY MODAL -->
 
     <!-- Switch between views -->
     <script type="text/javascript">
@@ -295,5 +316,26 @@ if (!isset($_SESSION["userid"])) {
 
         }
     </script>
+
+    <!-- Category filter fill -->
+    <script text='text/javascript'>
+        function fillCategoryFilter() {
+            fetch("includes/getCategories.php")
+            .then(response => response.json())
+            .then(categories => {
+                const categoryFilter = document.getElementById("filterCategories");
+                filterCategories.innerHTML = "";
+
+                categories.forEach(category => {
+                    const checkbox = document.createElement("label");
+                    checkbox.innerHTML = `<input type="checkbox" class ="filter-category" value="${category.categoryid}"> ${category.name}`
+
+                    categoryFilter.appendChild(checkbox);
+                })
+            })
+        }
+        document.addEventListener("DOMContentLoaded", fillCategoryFilter);
+    </script>
+
 </body>
 </html>
