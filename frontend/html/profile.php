@@ -36,10 +36,10 @@ $user = pg_fetch_assoc($result);
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="profile-text">
-                <h1>Welcome, <a href="index.php"><?php echo htmlspecialchars($_SESSION["username"]); ?></a></h1>
+                <h1><a href="index.php">&larr; Back to home</a></h1>
             </div>
-            <button id="calendarViewBtn" class="view-btn">Calendar View</button>
-            <button id="listViewBtn" class="view-btn">List View</button>
+            <button id="editProfileBtn" class="view-btn">Edit Profile</button>
+            <button id="analyticsBtn" class="view-btn">Analytics</button>
         </aside>
 
         <!-- Main Content -->

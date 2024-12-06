@@ -206,3 +206,44 @@ form {
     color: darkred;
 }
 
+#addCategoryForm input, #addCategoryForm select, #addCategoryForm textarea {
+    width: 100%; /* Full width */
+    padding: 10px; /* Space inside the input */
+    margin-bottom: 15px; /* Space below the input */
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Rounded corners for fields */
+    box-sizing: border-box;
+}
+
+#addCategoryForm button {
+    width: 100%; /* Full width */
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#addCategoryForm button:hover {
+    background-color: darkblue;
+}
+
+#addCategory-closeModal {
+    color: red;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: -10px;
+}
+
+
+#addCategory-closeModal:hover {
+    color: darkred;
+}
+
+#addCategoryModal {
+    display: none;
+}

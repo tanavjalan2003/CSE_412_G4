@@ -27,6 +27,7 @@ if (!isset($_SESSION["userid"])) {
             <button id="listViewBtn" class="view-btn">List View</button>
             <button id="addTaskBtn" class="view-btn">Add Task</button>
             <button id="addCategoryBtn" class="view-btn">Add Category</button>
+
             <div class="filters">
                 <input type="text" id="searchBar" placeholder="Search task name...">
 
@@ -65,7 +66,7 @@ if (!isset($_SESSION["userid"])) {
                 <table>
                     <thead>
                         <tr>
-                            <th data-column="TaskName" data-order="asc">Task Name &#x25B2;</th>
+                            <th data-column="TaskName" data-order="asc">Task Name</th>
                             <th data-column="DueDate">Due Date</th>
                             <th data-column="Status">Status</th>
                             <th data-column="Category">Category</th>
@@ -114,7 +115,7 @@ if (!isset($_SESSION["userid"])) {
         </div>
     </div>
 
-    <!-- TODO ADD TASK MODAL -->
+    <!-- TASK MODAL -->
     <div id="addTaskModal" class="modal">
         <div class="modal-wrapepr">
             <span id="addTask-closeModal">&times;</span>
@@ -141,11 +142,28 @@ if (!isset($_SESSION["userid"])) {
                 <!-- This will be filled like the task table except we pull user categories -->
                 <select id="addTask-category" name="categoryid"></select>
 
-                <button type="submit">Save Changes</button>
+                <button type="submit">Add Task</button>
             </form>
         </div>
     </div>
+
     <!-- TODO ADD CATEGORY MODAL -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-wrapepr">
+            <span id="addCategory-closeModal">&times;</span>
+            <h2>Add a new category</h2>
+
+            <form id="addCategoryForm">
+                <label for="name">Name</label>
+                <input type="text" id="addCategory-name" name="name" required>
+
+                <label for="description">Description</label>
+                <input type="textarea" id="addCategory-description" name="description" row="3">
+
+                <button type="submit">Add category</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Switch between views -->
     <script type="text/javascript">
@@ -443,6 +461,56 @@ if (!isset($_SESSION["userid"])) {
         }
 
         document.addEventListener("DOMContentLoaded", addTask);
+    </script>
+
+    <!-- Add Task Modal -->
+    <script text="text/javascript">
+        function addCategory() {
+            const addCategoryModal = document.getElementById("addCategoryModal");
+            const closeModal =  document.getElementById("addCategory-closeModal");
+            const addCategoryForm = document.getElementById("addCategoryForm");
+            const addCategoryButton = document.getElementById("addCategoryBtn");
+
+
+            document.getElementById("addCategoryForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                console.log(formData);
+
+                fetch("includes/addCategory.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    document.getElementById("addCategoryModal").style.display = "none";
+                    alert("Category added successfully!");
+                    fillCategoryFilter();
+                    applyFilters();
+                    })
+            });
+
+            addCategoryButton.addEventListener("click", () => {
+                addCategoryModal.style.display = "flex";
+            });
+
+            closeModal.addEventListener("click", () => {
+                addCategoryModal.style.display = "none";
+            });
+
+            window.addEventListener("click", (e) => {
+                if (e.target === addCategoryModal)
+                    addCategoryModal.style.display = "none";
+            });
+        }
+        document.addEventListener("DOMContentLoaded", addCategory);
     </script>
 
 </body>
