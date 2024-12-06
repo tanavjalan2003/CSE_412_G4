@@ -57,5 +57,17 @@ function signupUser($conn, $email, $name, $userPassword) {
     if (!$result) {
         return false;
     }
+
+    $sql = "SELECT \"userID\" FROM users WHERE email = $1";
+    $result = pg_query_params($conn, $sql, array($email));
+
+    $row = pg_fetch_assoc($result);
+    $userID = $row["userID"];
+
+    $sql = "INSERT INTO category(name, description, userid) VALUES ($1, $2, $3);";
+    $params = ["Default Category", "Default description", $userID];
+
+    $result = pg_query_params($conn, $sql, $params);
+
     return true;
 }

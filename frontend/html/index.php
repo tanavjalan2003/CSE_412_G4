@@ -406,27 +406,12 @@ if (!isset($_SESSION["userid"])) {
             const addTaskForm = document.getElementById("addTaskForm");
             const addTaskButton = document.getElementById("addTaskBtn");
 
-            fetch("includes/getCategories.php")
-            .then(response => response.json())
-            .then(categories => {
-                const addTaskCategorySelector = document.getElementById("addTask-category");
-                addTaskCategorySelector.innerHTML = "";
-
-                categories.forEach(category => {
-                    const option = document.createElement("option");
-                    option.value = category.categoryid;
-                    option.textContent = category.name;
-                    addTaskCategorySelector.appendChild(option);
-                });
-            })
-
-
             document.getElementById("addTaskForm").addEventListener("submit", function (e) {
                 e.preventDefault();
 
                 const formData = new FormData(this);
 
-                console.log(formData);
+                updateCategoriesInAdd();
 
                 fetch("includes/addTask.php", {
                     method: "POST",
@@ -460,7 +445,24 @@ if (!isset($_SESSION["userid"])) {
             });
         }
 
+        function updateCategoriesInAdd() {
+            fetch("includes/getCategories.php")
+            .then(response => response.json())
+            .then(categories => {
+                const addTaskCategorySelector = document.getElementById("addTask-category");
+                addTaskCategorySelector.innerHTML = "";
+
+                categories.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.categoryid;
+                    option.textContent = category.name;
+                    addTaskCategorySelector.appendChild(option);
+                });
+            })
+        }
+        
         document.addEventListener("DOMContentLoaded", addTask);
+        document.addEventListener("DOMContentLoaded", updateCategoriesInAdd);
     </script>
 
     <!-- Add Task Modal -->
@@ -477,7 +479,6 @@ if (!isset($_SESSION["userid"])) {
 
                 const formData = new FormData(this);
 
-                console.log(formData);
 
                 fetch("includes/addCategory.php", {
                     method: "POST",
@@ -494,6 +495,7 @@ if (!isset($_SESSION["userid"])) {
                     alert("Category added successfully!");
                     fillCategoryFilter();
                     applyFilters();
+                    updateCategoriesInAdd();
                     })
             });
 
