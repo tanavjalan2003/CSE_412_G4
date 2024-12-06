@@ -12,7 +12,11 @@ if (!isset($_SESSION["userid"])) {
 # Grab logged in user
 $userID = $_SESSION["userid"];
 
-$sql = 'SELECT * FROM task WHERE userid = $1;';
+$sql = 'SELECT task.taskid, task.title, task.duedate, task.status, category.name AS categoryname
+FROM task
+INNER JOIN category
+ON task.categoryid = category.categoryid
+WHERE task.userid = $1';
 $result = pg_query_params($conn, $sql, array($userID));
 
 if (!$result) {
