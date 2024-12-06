@@ -16,23 +16,60 @@ if (isset($_POST["submit"])) {
     require_once 'dbh.inc.php';
     require_once 'functions.inc.php';
 
-    // Hash the new password if provided
-    if (!empty($password)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE users SET name = $1, email = $2, password = $3 WHERE \"userID\" = $4";
-        $params = array($name, $email, $hashedPassword, $userID);
-    } else {
-        // If password is not changed, update only name and email
-        $sql = "UPDATE users SET name = $1, email = $2 WHERE \"userID\" = $3";
-        $params = array($name, $email, $userID);
+    if (!empty($email) && emailExists($conn, $email)) {
+        header("Location: ../profile.php?update=emailalreadyinuse");
+        exit();
     }
 
-    $result = pg_query_params($conn, $sql, $params);
 
-    if ($result) {
-        header("Location: ../profile.php?update=success");
-    } else {
-        echo "Error updating profile: " . pg_last_error($conn);
+    $sql = "UPDATE users SET";
+    $params = [];
+    $paramsCount = 0;
+
+    if (!empty($name)) {
+        if ($paramsCount > 0) {
+            $sql .= ",";
+        }
+        $sql .= " name = $" . (count($params) + 1);
+        $params[] = $name;
+        $paramsCount++;
+    }
+
+    if (!empty($email)) {
+        if ($paramsCount > 0) {
+            $sql .= ",";
+        }
+        $sql .= " email = $" . (count($params) + 1);
+        $params[] = $email;
+        $paramsCount++;
+    }
+
+    if (!empty($password)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        if ($paramsCount > 0) {
+            $sql .= ",";
+        }
+        $sql .= " password = $" . (count($params) + 1);
+        $params[] = $hashedPassword;
+        $paramsCount++;
+    }
+
+    if ($paramsCount > 0) {
+        $sql .= " WHERE \"userID\" = $" . (count($params) + 1);
+        $params[] = $userID;
+
+        $result = pg_query_params($conn, $sql, $params);
+
+        if ($result) {
+            header("Location: ../profile.php?update=success");
+        } else {
+            echo "Error updating profile: " . pg_last_error($conn);
+        }
+
+    }
+    else {
+        header("Location: ../profile.php?update=none");
     }
 }
 ?>
