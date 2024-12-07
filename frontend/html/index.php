@@ -189,7 +189,7 @@ if (!isset($_SESSION["userid"])) {
         </div>
     </div>
 
-    <!-- TODO ADD CATEGORY MODAL -->
+    <!-- CATEGORY MODAL -->
     <div id="addCategoryModal" class="modal">
         <div class="modal-wrapepr">
             <span id="addCategory-closeModal">&times;</span>
@@ -281,7 +281,7 @@ if (!isset($_SESSION["userid"])) {
             }
 
             taskListElement.innerHTML = tasks.map(task =>
-                        `<tr">
+                        `<tr data-taskid="${task.taskid}">
                                 <td>${task.title}</td>
                                 <td>${task.duedate}</td>
                                 <td>${task.status}</td>

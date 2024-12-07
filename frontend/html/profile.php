@@ -66,11 +66,11 @@ $analytics = pg_fetch_assoc($resultAnalytics);
                 <form action="includes/updateProfile.inc.php" method="POST">
                     <div class="form-group">
                         <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($_SESSION['username']); ?>" placeholder="Enter new name">
+                        <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" placeholder="Enter new name">
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($_SESSION['email']); ?>" placeholder="Enter new email">
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Enter new email">
                     </div>
                     <div class="form-group">
                         <label for="password">Password:</label>
