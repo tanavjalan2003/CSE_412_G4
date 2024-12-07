@@ -321,6 +321,22 @@ if (!isset($_SESSION["userid"])) {
                 })
         });
 
+        function updateAnalytics() {
+            fetch("includes/updateAnalytics.php", {
+                method: "POST",
+            })
+            .then(respone => response.json())
+            .then(data => {
+                if(data.success) {
+                    console.log("Analytics Updated");
+                }
+                else {
+                    console.error("Error when updating analytics: ", data.error);
+                }
+            })
+        }
+        document.addEventListener("DOMContentLoaded", updateAnalytics);
+
         function addEdit() {
             const editButtons = document.querySelectorAll(".editBtn");
             const editTaskModal = document.getElementById("taskEditingModal");
@@ -427,6 +443,7 @@ if (!isset($_SESSION["userid"])) {
                     document.getElementById("addTaskModal").style.display = "none";
                     alert("Task added successfully!");
                     applyFilters();
+                    updateAnalytics();
                     })
             });
 
