@@ -14,7 +14,7 @@ $duedate = $_POST['duedate'] ?? '';
 $status = $_POST['status'] ?? '';
 $categoryid = $_POST['category'] ?? null;
 
-if (!$taskid || !$title || !$description || !$duedate || !$status || !$categoryid) {
+if (!$taskid || !$title || !$duedate || !$status || !$categoryid) {
     echo json_encode(["error" => "All fields are required."]);
     exit();
 }

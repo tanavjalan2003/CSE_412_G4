@@ -16,7 +16,7 @@ if (isset($_POST["submit"])) {
     require_once 'dbh.inc.php';
     require_once 'functions.inc.php';
 
-    if (!empty($email) && emailExists($conn, $email)) {
+    if (!empty($email) && emailExists($conn, $email) && ($email != $_SESSION['email'])) {
         header("Location: ../profile.php?update=emailalreadyinuse");
         exit();
     }
@@ -27,6 +27,7 @@ if (isset($_POST["submit"])) {
     $paramsCount = 0;
 
     if (!empty($name)) {
+        $_SESSION["username"] = $name;
         if ($paramsCount > 0) {
             $sql .= ",";
         }
@@ -36,6 +37,7 @@ if (isset($_POST["submit"])) {
     }
 
     if (!empty($email)) {
+        $_SESSION["email"] = $email;
         if ($paramsCount > 0) {
             $sql .= ",";
         }

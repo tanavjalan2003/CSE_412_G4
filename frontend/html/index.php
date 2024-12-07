@@ -189,7 +189,7 @@ if (!isset($_SESSION["userid"])) {
         </div>
     </div>
 
-    <!-- TODO ADD CATEGORY MODAL -->
+    <!-- CATEGORY MODAL -->
     <div id="addCategoryModal" class="modal">
         <div class="modal-wrapepr">
             <span id="addCategory-closeModal">&times;</span>
@@ -281,7 +281,7 @@ if (!isset($_SESSION["userid"])) {
             }
 
             taskListElement.innerHTML = tasks.map(task =>
-                        `<tr">
+                        `<tr data-taskid="${task.taskid}">
                                 <td>${task.title}</td>
                                 <td>${task.duedate}</td>
                                 <td>${task.status}</td>
@@ -435,13 +435,54 @@ if (!isset($_SESSION["userid"])) {
                 filterCategories.innerHTML = "";
 
                 categories.forEach(category => {
-                    const checkbox = document.createElement("label");
-                    checkbox.innerHTML = `<input type="checkbox" class ="filter-category" value="${category.categoryid}"> ${category.name}`
+                    const categoryContainer = document.createElement("div");
+                    categoryContainer.className = "category-container";
 
-                    categoryFilter.appendChild(checkbox);
+                    const checkbox = document.createElement("label");
+                    checkbox.innerHTML = `
+                        <input type="checkbox" class="filter-category" value="${category.categoryid}">
+                        ${category.name}
+                    `;
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "deleteCategoryBtn";
+                    deleteButton.innerHTML = "🗑️";
+                    deleteButton.title = `Delete ${category.name}`;
+                    deleteButton.addEventListener("click", () => {
+                        if (confirm(`Are you sure you want to delete the category "${category.name}"?`)) {
+                            deleteCategory(category.categoryid);
+                        }
+                    });
+
+                    categoryContainer.appendChild(checkbox);
+                    categoryContainer.appendChild(deleteButton);
+
+                    categoryFilter.appendChild(categoryContainer);
                 })
             })
         }
+
+        function deleteCategory(categoryId) {
+            fetch("includes/deleteCategory.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ categoryid: categoryId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Category deleted successfully!");
+                        fillCategoryFilter(); // Refresh categories
+                        applyFilters(); // Refresh task list to reflect deleted category
+                    } else {
+                        alert(`Error deleting category: ${data.error}`);
+                    }
+                });
+        }
+
+
         document.addEventListener("DOMContentLoaded", fillCategoryFilter);
     </script>
 
