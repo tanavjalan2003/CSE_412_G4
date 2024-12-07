@@ -38,8 +38,6 @@ Welcome to the **Task Managing System**, an intuitive web application designed t
 ```
 project-root/
 │
-├── css/
-│   └── styles.css                # Main stylesheet
 │
 ├── includes/
 │   ├── addCategory.php           # Adds new task categories
