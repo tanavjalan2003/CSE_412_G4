@@ -8,7 +8,6 @@
 </head>
 <body>
     <section class="login">
-        <center>
             <div class="login-container">
                     <h1>Login</h1>
                     <form id="loginForm" action="includes/login.inc.php" method="POST">
@@ -20,11 +19,10 @@
                             <label for="userPassword">Password</label>
                             <input type="password" id="userPassword" name="userPassword" placeholder="Enter your password" required>
                         </div>
-                        <button type="submit" name="submit" class="btn">Login</button>
+                        <button type="submit" name="submit" class="view-btn">Login</button>
                     </form>
                     <p>Don't have an account? <a href="signup.php">Sign Up</a></p>
             </div>
-        </center>
     </section>
 </body>
 </html>

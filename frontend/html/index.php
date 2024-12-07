@@ -14,6 +14,46 @@ if (!isset($_SESSION["userid"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management System</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+    <script>
+        let calendar;
+
+        function initializeCalendar(tasks) {
+        const calendarEl = document.getElementById('calendar');
+        if (calendar) {
+            calendar.destroy(); // Destroy any existing calendar instance
+        }
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            },
+            events: tasks.map(task => ({
+                id: task.taskid,
+                title: task.title,
+                start: task.duedate,
+                extendedProps: {
+                    status: task.status,
+                    category: task.categoryname,
+                },
+            })),
+            eventClick: function (info) {
+                alert(
+                    `Task: ${info.event.title}\n` +
+                    `Status: ${info.event.extendedProps.status}\n` +
+                    `Category: ${info.event.extendedProps.category}`
+                );
+            },
+        });
+
+        calendar.render();
+        }
+
+    </script>
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -60,7 +100,9 @@ if (!isset($_SESSION["userid"])) {
         <!-- Main Content -->
         <m class="main-content">
             <div id="calendarView" class="view active">
-                <p>Calendar view will appear here.</p>
+                <div id="calendar">
+                </div>
+
             </div>
             <div id="listView" class="view">
                 <table>
@@ -94,7 +136,7 @@ if (!isset($_SESSION["userid"])) {
                 <input type="text" id="edit-title" name="title" required>
 
                 <label for="description">Description</label>
-                <input type="textarea" id="edit-description" name="description" row="3" required>
+                <input type="textarea" id="edit-description" name="description" row="3">
 
                 <label for="duedate">Due Date</label>
                 <input type="date" id="edit-duedate" name="duedate" required>
@@ -176,6 +218,10 @@ if (!isset($_SESSION["userid"])) {
         calendarViewBtn.addEventListener('click', () => {
             calendarView.classList.add('active');
             listView.classList.remove('active');
+
+            if (calendar) {
+                calendar.updateSize();
+            }
         });
 
         listViewBtn.addEventListener('click', () => {
@@ -222,6 +268,7 @@ if (!isset($_SESSION["userid"])) {
                     .then(response => response.json())
                     .then(tasks => {
                         renderTaskList(tasks);
+                        initializeCalendar(tasks);
                     })
         }
 
@@ -325,7 +372,7 @@ if (!isset($_SESSION["userid"])) {
             fetch("includes/updateAnalytics.php", {
                 method: "POST",
             })
-            .then(respone => response.json())
+            .then(response => response.json())
             .then(data => {
                 if(data.success) {
                     console.log("Analytics Updated");
@@ -531,6 +578,7 @@ if (!isset($_SESSION["userid"])) {
         }
         document.addEventListener("DOMContentLoaded", addCategory);
     </script>
+    
 
 </body>
 </html>
