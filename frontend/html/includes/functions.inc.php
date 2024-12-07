@@ -69,5 +69,11 @@ function signupUser($conn, $email, $name, $userPassword) {
 
     $result = pg_query_params($conn, $sql, $params);
 
+
+    $sql = "INSERT INTO analytics(userid, completedtasks, pendingtasks, overduetasks, lastupdated) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)";
+    $params = [$userID, 0, 0, 0];
+
+    $result = pg_query_params($conn, $sql, $params);
+
     return true;
 }
