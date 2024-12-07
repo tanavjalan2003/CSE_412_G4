@@ -39,3 +39,4 @@ if ($updateResult) {
 } else {
     echo json_encode(["error" => "Failed to update analytics"]);
 }
+

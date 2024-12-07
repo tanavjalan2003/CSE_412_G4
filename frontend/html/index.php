@@ -333,11 +333,13 @@ if (!isset($_SESSION["userid"])) {
 
                             if (row) {
                                 row.remove();
+                                applyFilters();
 
                                 // Just in case user deletes all their tasks.
                                 if (taskListElement.innerHTML.trim() == "")
                                     taskListElement.innerHTML = "<tr><td colspan = '5'> No tasks found. Good job!</td></tr>";
                             }
+                            
                         }
                     })
                 })
@@ -549,7 +551,25 @@ if (!isset($_SESSION["userid"])) {
                 });
             })
         }
+
+        function updateAnalytics() {
+            fetch("includes/updateAnalytics.php", {
+                    method: "POST",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("Analytics updated successfully!");
+                        } else {
+                            console.error("Error updating analytics:", data.error);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error connecting to analytics update:", err);
+                });
+        }
         
+        document.addEventListener("DOMContentLoaded", updateAnalytics);
         document.addEventListener("DOMContentLoaded", addTask);
         document.addEventListener("DOMContentLoaded", updateCategoriesInAdd);
     </script>
